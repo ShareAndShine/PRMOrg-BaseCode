@@ -14,13 +14,18 @@ import PARTNER_Lat from '@salesforce/schema/Account.Partner_Geo_Location__Latitu
 import PARTNER_Lon from '@salesforce/schema/Account.Partner_Geo_Location__Longitude__s';
 
 
+import {NavigationMixin } from 'lightning/navigation';
 
 
 
-export default class PartnerDetail extends LightningElement {
+
+export default class PartnerDetail extends NavigationMixin(LightningElement) {
 
     objectApiName = 'Account';
     recordId = '0015j00000wgxP7AAI';
+
+    showReviews = false;
+
 
     // Step 2: Have a property to hold field value
     partner_Name = PARTNER_NAME;
@@ -34,6 +39,23 @@ export default class PartnerDetail extends LightningElement {
     partner_lat = PARTNER_Lat;
     partner_long = PARTNER_Lon;
 
+
+    OpenPartnerReviewFlow()
+    {
+        const inputParams = {
+            type: 'standard__webPage',
+            attributes: {
+                url:'/flow/Rate_Partner_Performance?partnerAccountId=' + this.recordId
+            }
+        };
+
+        this[NavigationMixin.Navigate](inputParams, false); // replace current page in the brower  with the URL if it is set to true
+    }
+
+    ShowContactLocation()
+    {
+        this.showReviews = true;
+    }
 
 
 
