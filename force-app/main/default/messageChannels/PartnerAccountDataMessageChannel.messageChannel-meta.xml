@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel>
+    <isExposed>true</isExposed>
+    <masterLabel>SelectedPartnerData</masterLabel>
+    <description>This message channel is being used to share or publish selected partner information</description>
+
+    <lightningMessageFields>
+        <description>message channel source</description>
+        <fieldName>name</fieldName>
+    </lightningMessageFields>
+
+    <lightningMessageFields>
+        <description>selected partner account  Id</description>
+        <fieldName>selectedpartneraccountId</fieldName>
+    </lightningMessageFields>
+
+    <lightningMessageFields>
+        <description>selected partner account  name</description>
+        <fieldName>selectedpartneraccountName</fieldName>
+    </lightningMessageFields>
+
+    
+</LightningMessageChannel>

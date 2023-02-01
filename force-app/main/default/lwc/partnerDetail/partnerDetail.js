@@ -17,15 +17,32 @@ import PARTNER_Lon from '@salesforce/schema/Account.Partner_Geo_Location__Longit
 import {NavigationMixin } from 'lightning/navigation';
 
 
+// Step 1: Message channels > Get imports done
+// import message channels
+import PARTNER_CHANNEL from '@salesforce/messageChannel/PartnerAccountDataMessageChannel__c';
+
+// import default functions to publish & subscribe message channels
+import { publish, subscribe, MessageContext, unsubscribe } from 'lightning/messageService';
+
+
 
 
 export default class PartnerDetail extends NavigationMixin(LightningElement) {
 
     objectApiName = 'Account';
-    recordId = '0015j00000wgxP7AAI';
+    //recordId = '0015j00000wgxP7AAI';
 
     showReviews = false;
 
+    subscription; // to hold subscription value
+
+    partnerAccountId; // to hold data from channel
+    partnerAccountName; // to hold data from channel
+    partnerChannelName; // to hold data from channel
+
+     // Step 2: Message channels > Get imports done >  make a wire call and get MessageContext populated with publisher details
+     @wire(MessageContext) // will carry info abt publisher and subscriber
+     messageContext;
 
     // Step 2: Have a property to hold field value
     partner_Name = PARTNER_NAME;
@@ -57,6 +74,38 @@ export default class PartnerDetail extends NavigationMixin(LightningElement) {
         this.showReviews = true;
     }
 
+    connectedCallback()
+    {
+
+        if(this.subscription)
+            return;
+
+        this.subscription = subscribe(this.messageContext,PARTNER_CHANNEL, (message) =>{ this.processMessageAndReadChannelData(message)});
+    }
+
+    processMessageAndReadChannelData(message)
+    {
+        this.partnerAccountId = message.selectedpartneraccountId;
+        this.partnerAccountName = message.selectedpartneraccountName;
+        this.partnerChannelName = message.name;
+    }
+
+
+    disconnectedCallback()
+    {
+        unsubscribe(this.subscription);
+        this.subscription = null;
+    }
+
+    get IsPartnerSelected()
+    {
+        if(this.partnerAccountId == null  || this.partnerAccountId.length ===0)
+        {
+            return false;
+        }
+        return true;
+
+    }
 
 
 }

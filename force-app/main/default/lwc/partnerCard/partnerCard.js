@@ -1,5 +1,14 @@
 import { LightningElement, api, wire } from 'lwc';
 
+// Step 1: Message channels > Get imports done
+// import message channels
+import PARTNER_CHANNEL from '@salesforce/messageChannel/PartnerAccountDataMessageChannel__c';
+
+import OPP_CHANNEL from '@salesforce/messageChannel/OppDataMessageChannel__c';
+
+
+// import default functions to publish & subscribe message channels
+import { publish, subscribe, MessageContext } from 'lightning/messageService';
 
 
 export default class PartnerCard extends LightningElement {
@@ -10,6 +19,12 @@ export default class PartnerCard extends LightningElement {
     userImg;
     partnerTheme;
     partnerTitleTheme; 
+
+
+    // Step 2: Message channels > Get imports done >  make a wire call and get MessageContext populated with publisher details
+    @wire(MessageContext) // will carry info abt publisher and subscriber
+    messageContext;
+
 
     connectedCallback() {
         this.getUserImage(this.partnerProfile.Partner_Primary_POC__r.Salutation);
@@ -61,6 +76,37 @@ export default class PartnerCard extends LightningElement {
         }
     }
 
+
+    handleSelectedPartnerClick(event)
+    {
+        const partnerAccountId = this.partnerProfile.Id; // read partner account id from partner profile
+
+
+        // Step 3: Message channels > Get imports done >  make a wire call and get MessageContext populated with publisher details >> unpack msg channel and add data into it
+
+        const msgToPublish = {
+
+            name:"Partner Account",
+            selectedpartneraccountId:partnerAccountId,
+            selectedpartneraccountName: this.partnerProfile.Name
+        };
+
+        //publish
+        publish(this.messageContext, PARTNER_CHANNEL,msgToPublish);
+
+
+        const msgOppToPublish = {
+
+            oppName:"Opportuntity data",
+            oppId:'0x1111',
+            oppStage: 'Closed-won'
+        };
+
+        //publish
+        publish(this.messageContext, OPP_CHANNEL,msgOppToPublish);
+
+
+    }
 
 
 

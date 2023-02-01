@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>Opportunity MessageChannel</masterLabel>
+    <isExposed>true</isExposed>
+    <description>This is a sample Lightning Message Channel created for showing how to send opportunity data</description>
+
+    <!-- Opp. Name-->
+    <lightningMessageFields>
+        <fieldName>oppName</fieldName>
+        <description>carries opp Name</description>
+    </lightningMessageFields>
+
+    <!-- Opp. ID-->
+    <lightningMessageFields>
+        <fieldName>oppId</fieldName>
+        <description>carries opp Id</description>
+    </lightningMessageFields>
+
+    <!-- Opp. Stage-->
+    <lightningMessageFields>
+        <fieldName>oppStage</fieldName>
+        <description>carries opp stage</description>
+    </lightningMessageFields>
+</LightningMessageChannel>
