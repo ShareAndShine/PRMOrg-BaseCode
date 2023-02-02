@@ -7,6 +7,11 @@ import fetchAllPartnerType from '@salesforce/apex/partnerSearchController.getAll
 // Navigation Mix - Step 1
 import { NavigationMixin } from 'lightning/navigation';
 
+import {refreshApex} from '@salesforce/apex';
+
+
+
+
 // Refs: Mixin in JS  
 
 // Navigation Mix - Step 3
@@ -45,21 +50,31 @@ export default class PartnerSearch extends NavigationMixin(LightningElement) {
    }*/
 
 
+   // cache burst
+   dataReceivedFromDB;
+   dataToRefresh;
+
    // Step 3: Use @wire method to make a call to the APEX method
    @wire(fetchAllPartnerType)
-   handleOuput({data, error}) // data & error are system defined properties to hold data received from DB or error when APEX method is called
+   handleOuput(result) // data & error are system defined properties to hold data received from DB or error when APEX method is called
    {
       //Check if data is retrieved 
-      if(data)
+      if(result.data)
       {
+
+         this.dataReceivedFromDB = result.data; // copy of data
+         this.dataToRefresh = result; // copy of entire data and error properties 
+
+         // keep checking for new changes before data is served from cache
+         refreshApex(this.dataToRefresh);
         
-         console.log('Original data from DB:: ' + JSON.stringify(data));
+         console.log('Original data from DB:: ' + JSON.stringify(result.data));
 
         // create an object to show as 1st iten
         this.partnerTypes = [ {'label': 'Select a partner Type', 'value':''}];
         
         // loop thru each record retrieved from DB and then change the key
-        data.forEach(item => {
+        result.data.forEach(item => {
 
          // switch keys
          const partnerType = {};
@@ -76,7 +91,7 @@ export default class PartnerSearch extends NavigationMixin(LightningElement) {
         console.log('this.partnerTypes - After::' + JSON.stringify(this.partnerTypes));
       
       }
-      else if(error)
+      else if(result.error)
       {
          console.log('Error');
       }

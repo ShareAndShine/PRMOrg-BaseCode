@@ -1,6 +1,8 @@
 import { LightningElement, wire, api } from 'lwc';
 import getPartners from '@salesforce/apex/partnerSearchController.getPartners';
 
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
 
 export default class PartnerSearchResult extends LightningElement {
 
@@ -29,7 +31,7 @@ export default class PartnerSearchResult extends LightningElement {
     }
     else if(error)
     {
-      console.log('Error!!!')
+      this.showToast('ERROR', result.error.body.message, 'error');
     }
   }
 
@@ -41,5 +43,13 @@ export default class PartnerSearchResult extends LightningElement {
     return false;
   }
 
+  showToast(title, message, variant) {
+    const evt = new ShowToastEvent({
+        title: title,
+        message: message,
+        variant: variant,
+    });
+    this.dispatchEvent(evt);
+}
 
 }
